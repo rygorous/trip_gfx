@@ -1,9 +1,26 @@
-\documentclass{scrreprt}
+\documentclass[DIV10]{scrreprt}
 \usepackage{fourier}
 \usepackage{url}
-\usepackage{hyperref}
 \usepackage[sectionbib]{chapterbib}
 \usepackage[sectionbib,square]{natbib}
+
+\usepackage{color}
+\definecolor{NavyBlue}{cmyk}{0.94,0.54,0,0}
+\usepackage[raiselinks=true,%
+        colorlinks=true,%
+        linkcolor=NavyBlue,%
+        menucolor=NavyBlue,%
+        citecolor=NavyBlue,%
+        urlcolor=NavyBlue,%
+        bookmarks=true,%
+        bookmarksopenlevel=1,%
+        bookmarksopen=true,%
+        bookmarksnumbered=true,%
+        hyperindex=true,%
+        plainpages=false,%
+        pdfpagelabels=true,%
+        ]{hyperref}
+\newcommand{\code}[1]{\texttt{#1}}
 
 \setkomafont{title}{\bfseries}
 \setkomafont{disposition}{\bfseries}
@@ -19,7 +36,7 @@
 
 % Include sections here
 \chapter{Introduction}
-blah blah blah.
+I'll write this later.
 
 \include{sw_stack}
 
