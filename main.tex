@@ -1,0 +1,26 @@
+\documentclass{scrreprt}
+\usepackage{fourier}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[sectionbib]{chapterbib}
+\usepackage[sectionbib,square]{natbib}
+
+\setkomafont{title}{\bfseries}
+\setkomafont{disposition}{\bfseries}
+
+\begin{document}
+\bibliographystyle{plainnat}
+\setcitestyle{numbers}
+
+\title{A Trip Through The Graphics Pipeline 2011}
+\author{Fabian Giesen}
+\maketitle
+\tableofcontents
+
+% Include sections here
+\chapter{Introduction}
+blah blah blah.
+
+\include{sw_stack}
+
+\end{document}
