@@ -178,7 +178,7 @@ point in time, only one process actually has its command buffers forwarded to
 the KMD; the remaining command buffers just get queued up.
 
 Except it's not actually command buffers (in WDDM lingo) that get sent to the 
-GPU at all; WDDM calls the buffer that actually get sent to the hardware ``DMA 
+GPU at all; WDDM calls the buffers that actually get sent to the hardware ``DMA 
 buffers''. The UMD calls the ``Render'' entry point with a command buffer, 
 allocation list and patch list; all this eventually gets forwarded to the KMD, 
 which has to validate that command buffer and turn it into 
