@@ -3,8 +3,8 @@
 \usepackage{url}
 \usepackage[sectionbib]{chapterbib}
 \usepackage[sectionbib,square]{natbib}
-
-\usepackage{color}
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning}
 \definecolor{NavyBlue}{cmyk}{0.94,0.54,0,0}
 \usepackage[raiselinks=true,%
         colorlinks=true,%
@@ -20,6 +20,7 @@
         plainpages=false,%
         pdfpagelabels=true,%
         ]{hyperref}
+
 \newcommand{\code}[1]{\texttt{#1}}
 
 \setkomafont{title}{\bfseries}
@@ -34,10 +35,8 @@
 \maketitle
 \tableofcontents
 
-% Include sections here
-\chapter{Introduction}
-I'll write this later.
-
+% Include the chapters
+\include{intro}
 \include{sw_stack}
 
 \end{document}

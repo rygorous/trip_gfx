@@ -6,7 +6,31 @@ This section assumes a reasonably recent Windows version (Vista or later),
 which use the WDDM~\citep{wddm} driver model. Older driver models (and other
 platforms) are somewhat different, but that's outside the scope of this
 text---I just picked WDDM because it's probably the most relevant model on
-PCs right now.
+PCs right now. The basic structure looks like this:
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+    every node/.style={
+        rectangle,
+        minimum size=.25in,
+        thick,draw=black
+    },
+    edge/.style={stealth-stealth,thick}]
+    \node (app)                           {Application};
+    \node (api)   [below=of app]          {D3D runtime}
+        edge [edge]                       (app);
+    \node (umd)   [right=of api]          {User-Mode Driver (UMD)}
+        edge [edge]                       (api);
+    \node (gkrnl) [below=of api]          {Graphics kernel subsystem}
+        edge [edge]                       (api);
+    \node (kmd)   [below=of gkrnl]        {Kernel-Mode Driver (KMD)}
+        edge [edge]                       (gkrnl);
+
+\end{tikzpicture}
+\label{fig:swstack:swstack}
+\caption{The software stack (D3D on WDDM).}
+\end{figure}
 
 \section{Application and API}
 
@@ -164,7 +188,10 @@ functionality for rendering, the exclusive model isn't workable anymore. So we
 need something that acts as the gatekeeper for access to the GPU. In the case 
 of WDDM, that something is the DirectX graphics kernel subsystem (aka 
 \code{Dxgkrnl.sys}), an OS component which contains---among other things---the 
-GPU scheduler and the video memory manager.
+GPU scheduler and the video memory manager. In WDDM, the UMD doesn't talk to the
+kernel layer directly, but has to go through the D3D runtime again; however,
+the runtime basically just forwards the calls to the right kernel-mode entry
+points.
 
 \section{GPU scheduler and Video Memory Manager}
 
@@ -299,7 +326,9 @@ costlier data-flow analysis than you would normally do.
 Open Source implementations of GL tend to use either Mesa or Gallium3D, both of
 which have a single shared GLSL frontend that generates a device-independent IR
 and supports multiple pluggable backends for actual hardware. In other words,
-that space is fairly similar to the D3D model.
+that space is fairly similar to the D3D model of sharing the front-end for
+different implementations and only specializing the low-level codegen that's
+actually different for every piece of hardware.
 
 \section{Further Reading}
 
