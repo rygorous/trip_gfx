@@ -2,5 +2,44 @@
 \label{ch:memory}
 \bibliographystyle{plainnat}
 
+Before a GPU can do anything with the DMA buffers written by the (kernel mode) driver,
+it needs to be able to read them first, which entails communication between CPU and GPU
+and interfacing with GPU memory. On the CPU side, processors have long since stopped
+passing every memory access to RAM chips, and instead employ a sophisticated memory
+hierarchy with multiple levels of caches.\footnote{Caches of various kinds are by far
+the biggest part of contemporary CPUs in terms of area.} GPU memory systems have very
+different goals and operate under different design constraints. This unique type of
+memory architecture greatly influences the way shader cores handle loads and stores,
+and resonates through the whole design of modern GPUs.
+
+This chapter will also brieflyu cover with the host interface, the part of the GPU that talks
+to the outside world (usually the CPU).
+
+\section{The memory subsystem}
+
+As a regular programmer, the most important thing to understand about the memory
+subsystem of GPUs is that, compared to a CPU, it is both incredibly fast and incredibly
+slow at the same time. Fast, in that GPU memory systems deliver incredibly amounts of
+\emph{bandwidth}: At the time of writing, the fastest desktop CPU you can buy from Intel,
+the Core i7-3960X, has a theoretical peak memory bandwidth of 51.2~GB/s~\citep{membw-i7-3960x};
+a more pedestrian (but still very much high-end) Core i7-2700K maxes out at 21~GB/s~\citep{membw-i7-2700k}.
+For comparison, recent high-end discrete GPUs from AND and Nvidia boast memory bandwidths of
+264~GB/s~\citep{membw-radeonhd-7970} and 192~GB/s~\citep{membw-geforce-gtx680}, respectively---a
+tremendous difference from the values we see for CPUs.
+
+At the same time, GPU memory subsytems are very slow, in the sense that they have high
+memory access latency. Again some numbers: memory access latency on Core~i7 level CPUs comes
+out at about 45ns~\citep{memlat-i7}, while Nvidia quotes about 400--800 cycles of memory access
+latency for Fermi generation chips~\citep{memlat-nvidia}. At the 1544MHz high-end Fermi parts
+typically run at, this means about 260--520ns---again a 5$\times$ difference between high-end
+CPUs and GPUs, but this time in the opposite direction.
+
+This is not a coincidence: GPUs want high memory bandwidth and are willing to trade a significant
+increase in latency (and also power draw, which I will ignore in this text) in return. This is part
+of a general pattern: GPUs greatly favor throughput over latency, so when there is an opportunity to
+trade one for the other, GPUs will go for throughput every time. Of course, this is easier said than
+done: optimizing for throughput works differently than optimizing for latency does, and software
+developers tend to be far more familiar with the latter. We will see this subject come up again and again
+throughout this text.
 
 \bibliography{memory}{}
