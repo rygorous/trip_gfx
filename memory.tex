@@ -8,11 +8,12 @@ and interfacing with GPU memory. On the CPU side, processors have long since sto
 passing every memory access to RAM chips, and instead employ a sophisticated memory
 hierarchy with multiple levels of caches.\footnote{Caches of various kinds are by far
 the biggest part of contemporary CPUs in terms of area.} GPU memory systems have very
-different goals and operate under different design constraints. This unique type of
-memory architecture greatly influences the way shader cores handle loads and stores,
+different goals and operate under different design constraints; while they still use
+caches, they generally tend to be smaller and favor different usage patterns. This unique
+type of memory architecture greatly influences the way shader cores handle loads and stores,
 and resonates through the whole design of modern GPUs.
 
-This chapter will also brieflyu cover with the host interface, the part of the GPU that talks
+This chapter will also briefly cover the host interface, the part of the GPU that talks
 to the outside world (usually the CPU).
 
 \section{The memory subsystem}
@@ -41,5 +42,41 @@ trade one for the other, GPUs will go for throughput every time. Of course, this
 done: optimizing for throughput works differently than optimizing for latency does, and software
 developers tend to be far more familiar with the latter. We will see this subject come up again and again
 throughout this text.
+
+But first things first: how do we get high memory bandwidth in the first place? There's several ways.
+The first and conceptually easiest is to just increase memory clock rate. All other things being equal,
+if we increase the number of memory transfers per second, we will manage to access more memory in a second.
+However, power draw goes up dramatically with increased clock frequencies, which limits practical clock rates;
+as of this writing, mainstream GPUs ship with memory clock rates of 1.5GHz or less.\footnote{GPU vendors
+sometimes like to quote memory \emph{data rate} instead of \emph{clock frequency}; for GDDR5, data rate is $4 \times$
+the clock frequency, while for GDDR3 and DDR2/3 memory it is $2 \times$ the clock frequency.}
+
+If we can't increase the clock any further, the next option is to throw more hardware at the problem, by
+making the memory bus wider. To give a concrete example, a single GDDR5 memory module has an
+IO width of 32 bits~\citep{elpida-gddr5}, meaning that a GDDR5 chip transfers data 32 bits at a time.\footnote{Strictly
+speaking, GDDR5 memory also supports ``clamshell mode'' where two GDDR5 chips share the same address/command bus
+and only transfer 16 bits at a time; from the memory controller's point of view, normal and clamshell mode
+look basically the same, and I'll ignore the distinction here.} So if a GPU uses GDDR5 and has a 256-bit
+wide memory subsystem, that means the memory controller is connected to 8 memory chips. This in turns means that
+to max out memory bandwidth, there needs to be a transfer from or to each of those memory chips in every single clock
+cycle.
+
+Which leads to the third way to increase effective memory bandwidth: try not to waste any cycles! To
+maximize net bandwidth, GPU memory controllers buffer and reorder memory accesses very aggressively.
+Assuming that memory accesses are reasonably balanced across different memory chips, i.e. no chip is used
+much more often than any other, we can get fairly close to actually getting one memory transfer per memory
+chip and clock if we're willing to queue memory accesses up for a while. Memory transfers tend to be generated
+in short, high-rate bursts; queuing allows us to smooth out these bumps and turn them into a fairly steady
+level of memory requests that then gets serviced by the memory chips. In general, the longer the queues are,
+the smoother things will go. The flipside is that longer queues automatically mean --- and this is where the
+trade-off comes into play --- longer latency. CPUs try to keep queue lengths short (at least while they can,
+i.e.\@ as long as the memory system isn't under high load), which gives them low latency but also costs them
+effective memory bandwidth. GPUs queue very aggressively, so they are really good at keeping their memory chips
+busy, but they pay for it with hundreds of cycles of extra latency.
+
+However, this only gets us half the way towards our goal of not wasting cycles. We're doing our best to make
+sure that the memory chips are busy every cycle; however, there's several ways that a DRAM chip can be busy,
+and most of them don't involve any transfers of payload data, so these cycles are essentially lost as far as
+bandwidth is concerned.
 
 \bibliography{memory}{}
