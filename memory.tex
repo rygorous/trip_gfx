@@ -77,6 +77,8 @@ busy, but they pay for it with hundreds of cycles of extra latency.
 However, this only gets us half the way towards our goal of not wasting cycles. We're doing our best to make
 sure that the memory chips are busy every cycle; however, there's several ways that a DRAM chip can be busy,
 and most of them don't involve any transfers of payload data, so these cycles are essentially lost as far as
-bandwidth is concerned.
+bandwidth is concerned. All of these ``wasted'' cycles are caused by the internal organization of DRAM.
+
+\section{How DRAM works}
 
 \bibliography{memory}{}

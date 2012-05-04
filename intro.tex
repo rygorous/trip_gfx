@@ -1,3 +1,23 @@
 \chapter{Introduction}
 \label{ch:intro}
-I'll write this later.
+In July 2011, I spontaneously started writing ``A trip through the Graphics Pipeline 2011'', a series of
+blog posts that would eventually number 13~parts and 35000~words. The goal was to explain the nuts and bolts
+of the graphics pipeline as implemented in modern high-end (desktop) GPUs. The only planning that went into it
+was a two-page outline that contained nothing more than a rough breakdown into separate posts, with
+maybe four or five keywords per part. I wrote the parts in sequence and posted them as soon as they were
+ready---initially at a rate of one per day, but slowing down quite a bit towards the end. The big advantage
+was that I got immediate feedback, but it also meant that the posts were all essentially in draft state and
+never got properly revised. There were also some holes and structural problems with the original outline that
+I was stuck with. This text is the attempt to rectify that situation by revising and expanding upon the original
+material and collecting it all in one place.
+
+The intended audience is programmers with an interest in the low-level workings of modern GPUs. Familiarity with
+the basic ideas of modern CPU architectures (caches, pipelining, SIMD code, multi-core architectures) is assumed,
+and a basic understanding of how hardware in general works doesn't hurt.
+
+This text is broken down into chapters, roughly corresponding to the different topics covered in the original
+series of blog posts. The chapters are fairly self-contained and initially proceed in ``dataflow order''---from the
+application generating draw calls all the day down to pixels being written to the frame buffer, explaining the most
+commonly used path (Vertex and Pixel Shaders, but none of the other shader types) first. Later chapters cover Geometry
+Shaders and the Tessellation pipeline, both of which extend the basic graphics pipeline with more front-end
+(pre-rasterization) stages.
